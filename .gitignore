@@ -1,0 +1,75 @@
+# =============== #
+# IDEs & Editors  #
+# =============== #
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# VS Code
+.vscode/
+
+# =============== #
+# OS Generated    #
+# =============== #
+
+# Mac
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ========================= #
+# Gradle & Build System     #
+# ========================= #
+.gradle/
+build/
+gradle/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+gradlew
+gradlew.bat
+local.properties
+secret.properties
+sign.properties
+repo/
+user_cache.json
+*.log
+
+# ======================== #
+# Java & Minecraft         #
+# ======================== #
+
+# Compiled Java class files
+*.class
+
+# Logs and reports
+logs/
+crash-reports/
+debug/
+
+# Minecraft run directories
+run/
+runs/
+run-data/
+
+# Generated source code (e.g., from data generators)
+src/generated/
+
+# Jars - ignore all jars in the root, but NOT in the 'libs' folder
+*.jar
+!libs/*.jar

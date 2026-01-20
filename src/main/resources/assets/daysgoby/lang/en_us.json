@@ -1,0 +1,13 @@
+{
+  "itemGroup.daysgoby": "Example Mod Tab",
+  "block.daysgoby.example_block": "Example Block",
+  "item.daysgoby.example_item": "Example Item",
+
+  "daysgoby.configuration.title": "Days go by Configs",
+  "daysgoby.configuration.section.daysgoby.common.toml": "Days go by Configs",
+  "daysgoby.configuration.section.daysgoby.common.toml.title": "Days go by Configs",
+  "daysgoby.configuration.items": "Item List",
+  "daysgoby.configuration.logDirtBlock": "Log Dirt Block",
+  "daysgoby.configuration.magicNumberIntroduction": "Magic Number Text",
+  "daysgoby.configuration.magicNumber": "Magic Number"
+}
