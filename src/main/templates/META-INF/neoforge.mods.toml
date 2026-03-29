@@ -46,12 +46,8 @@ authors="Small_fireworks"
 
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-Example mod description.
+Adds removable warming and cooling liners to worn armor, with optional Tough As Nails integration.
 '''
-
-# The [[mixins]] block allows you to declare your mixin config to FML so that it gets loaded.
-[[mixins]]
-config="${mod_id}.mixins.json"
 
 # The [[accessTransformers]] block allows you to declare where your AT file is.
 # If this block is omitted, a fallback attempt will be made to load an AT from META-INF/accesstransformer.cfg
@@ -86,6 +82,13 @@ config="${mod_id}.mixins.json"
     # This version range declares a minimum of the current minecraft version up to but not including the next major version
     versionRange="${minecraft_version_range}"
     ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="toughasnails"
+    type="optional"
+    versionRange="[0,)"
+    ordering="AFTER"
     side="BOTH"
 
 # Features are specific properties of the game environment, that you may want to declare you require. This example declares

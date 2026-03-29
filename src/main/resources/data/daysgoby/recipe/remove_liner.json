@@ -1,0 +1,10 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "toughasnails"
+    }
+  ],
+  "type": "daysgoby:remove_liner",
+  "category": "misc"
+}

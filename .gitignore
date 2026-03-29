@@ -36,19 +36,19 @@ $RECYCLE.BIN/
 # ========================= #
 # Gradle & Build System     #
 # ========================= #
+.gradle-user/
 .gradle/
 build/
-gradle/
-!gradle/wrapper/gradle-wrapper.jar
-!gradle/wrapper/gradle-wrapper.properties
-gradlew
-gradlew.bat
 local.properties
 secret.properties
 sign.properties
 repo/
 user_cache.json
 *.log
+
+# Local dependency/reference checkouts
+_deps/
+mods_hoardercraft/
 
 # ======================== #
 # Java & Minecraft         #
@@ -73,3 +73,4 @@ src/generated/
 # Jars - ignore all jars in the root, but NOT in the 'libs' folder
 *.jar
 !libs/*.jar
+!gradle/wrapper/gradle-wrapper.jar
