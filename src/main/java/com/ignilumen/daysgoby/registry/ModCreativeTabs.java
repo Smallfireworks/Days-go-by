@@ -1,6 +1,7 @@
 package com.ignilumen.daysgoby.registry;
 
 import com.ignilumen.daysgoby.Daysgoby;
+import com.ignilumen.daysgoby.module.ModModules;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -19,7 +20,11 @@ public final class ModCreativeTabs {
                     .title(Component.translatable("itemGroup.daysgoby"))
                     .withTabsBefore(CreativeModeTabs.COMBAT)
                     .icon(() -> ModItems.LINER_SNIPS.get().getDefaultInstance())
-                    .displayItems((parameters, output) -> output.accept(ModItems.LINER_SNIPS.get()))
+                    .displayItems((parameters, output) -> {
+                        if (ModModules.isArmorLiningEnabled()) {
+                            output.accept(ModItems.LINER_SNIPS.get());
+                        }
+                    })
                     .build());
 
     private ModCreativeTabs() {}

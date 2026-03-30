@@ -2,6 +2,7 @@ package com.ignilumen.daysgoby.registry;
 
 import com.ignilumen.daysgoby.Daysgoby;
 import com.ignilumen.daysgoby.recipe.ApplyLinerRecipe;
+import com.ignilumen.daysgoby.recipe.CraftLinerSnipsRecipe;
 import com.ignilumen.daysgoby.recipe.RemoveLinerRecipe;
 
 import net.minecraft.core.registries.Registries;
@@ -17,6 +18,9 @@ public final class ModRecipeSerializers {
 
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ApplyLinerRecipe>> APPLY_LINER =
             RECIPE_SERIALIZERS.register("apply_liner", () -> new SimpleCraftingRecipeSerializer<>(ApplyLinerRecipe::new));
+
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<CraftLinerSnipsRecipe>> CRAFT_LINER_SNIPS =
+            RECIPE_SERIALIZERS.register("craft_liner_snips", () -> new SimpleCraftingRecipeSerializer<>(CraftLinerSnipsRecipe::new));
 
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<RemoveLinerRecipe>> REMOVE_LINER =
             RECIPE_SERIALIZERS.register("remove_liner", () -> new SimpleCraftingRecipeSerializer<>(RemoveLinerRecipe::new));

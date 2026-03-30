@@ -5,18 +5,6 @@
       "modid": "toughasnails"
     }
   ],
-  "type": "minecraft:crafting_shapeless",
-  "category": "equipment",
-  "ingredients": [
-    {
-      "item": "minecraft:shears"
-    },
-    {
-      "item": "minecraft:iron_ingot"
-    }
-  ],
-  "result": {
-    "count": 1,
-    "id": "daysgoby:liner_snips"
-  }
+  "type": "daysgoby:craft_liner_snips",
+  "category": "equipment"
 }

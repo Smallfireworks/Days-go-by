@@ -2,6 +2,7 @@ package com.ignilumen.daysgoby.util;
 
 import com.ignilumen.daysgoby.item.ArmorLining;
 import com.ignilumen.daysgoby.item.LiningType;
+import com.ignilumen.daysgoby.module.ModModules;
 import com.ignilumen.daysgoby.registry.ModComponents;
 import com.ignilumen.daysgoby.registry.ModItems;
 
@@ -55,14 +56,24 @@ public final class ArmorLiningUtil {
     }
 
     public static int getHeatingLiningCount(Player player) {
+        if (!ModModules.isArmorLiningEnabled()) {
+            return 0;
+        }
         return countLinings(player, LiningType.WARMING);
     }
 
     public static int getCoolingLiningCount(Player player) {
+        if (!ModModules.isArmorLiningEnabled()) {
+            return 0;
+        }
         return countLinings(player, LiningType.COOLING);
     }
 
     public static ApplyMatch findApplyMatch(CraftingInput input) {
+        if (!ModModules.isArmorLiningEnabled()) {
+            return null;
+        }
+
         if (input.ingredientCount() != 2) {
             return null;
         }
@@ -97,6 +108,10 @@ public final class ArmorLiningUtil {
     }
 
     public static RemovalMatch findRemovalMatch(CraftingInput input) {
+        if (!ModModules.isArmorLiningEnabled()) {
+            return null;
+        }
+
         if (input.ingredientCount() != 2) {
             return null;
         }
@@ -134,6 +149,10 @@ public final class ArmorLiningUtil {
     }
 
     public static ItemStack createLinerStack(ItemStack armorStack, LiningType liningType) {
+        if (!ModModules.isArmorLiningEnabled()) {
+            return ItemStack.EMPTY;
+        }
+
         EquipmentSlot slot = getSupportedArmorSlot(armorStack);
         if (slot == null) {
             return ItemStack.EMPTY;
