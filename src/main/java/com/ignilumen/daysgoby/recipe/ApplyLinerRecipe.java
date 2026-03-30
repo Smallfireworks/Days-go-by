@@ -28,7 +28,7 @@ public final class ApplyLinerRecipe extends CustomRecipe {
             return ItemStack.EMPTY;
         }
 
-        return ArmorLiningUtil.applyLining(match.armorStack(), match.linerType());
+        return ArmorLiningUtil.applyLining(match.armorStack(), match.linerStack(), match.linerType());
     }
 
     @Override

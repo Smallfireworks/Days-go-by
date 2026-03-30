@@ -40,10 +40,10 @@ public final class ArmorLiningUtil {
         return stack.is(ModItems.LINER_SNIPS.get());
     }
 
-    public static ItemStack applyLining(ItemStack armorStack, LiningType liningType) {
+    public static ItemStack applyLining(ItemStack armorStack, ItemStack linerStack, LiningType liningType) {
         ItemStack result = armorStack.copy();
         result.setCount(1);
-        result.set(ModComponents.ARMOR_LINING.get(), new ArmorLining(liningType));
+        result.set(ModComponents.ARMOR_LINING.get(), new ArmorLining(liningType, linerStack));
         return result;
     }
 
@@ -147,6 +147,13 @@ public final class ArmorLiningUtil {
         return new ItemStack(BuiltInRegistries.ITEM.get(linerId));
     }
 
+    public static ItemStack restoreLinerStack(ItemStack armorStack, ArmorLining lining) {
+        if (lining.hasStoredLiner()) {
+            return lining.linerStack().copy();
+        }
+        return createLinerStack(armorStack, lining.type());
+    }
+
     public static EquipmentSlot getSupportedArmorSlot(ItemStack stack) {
         EquipmentSlot slot = stack.getEquipmentSlot();
         if (slot != null && slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
@@ -170,6 +177,10 @@ public final class ArmorLiningUtil {
         return getLinerType(stack) != null;
     }
 
+    public static boolean isIntrinsicTemperatureArmor(ItemStack stack) {
+        return getLinerType(stack) != null;
+    }
+
     public static LiningType getLinerType(ItemStack stack) {
         if (stack.is(TAN_HEATING_ARMOR)) {
             return LiningType.WARMING;
@@ -181,7 +192,7 @@ public final class ArmorLiningUtil {
     }
 
     private static ApplyMatch tryCreateApplyMatch(ItemStack armorStack, ItemStack linerStack) {
-        if (!isLineableArmor(armorStack) || hasLining(armorStack) || !isLiner(linerStack)) {
+        if (!isLineableArmor(armorStack) || hasLining(armorStack) || isIntrinsicTemperatureArmor(armorStack) || !isLiner(linerStack)) {
             return null;
         }
 
@@ -191,7 +202,7 @@ public final class ArmorLiningUtil {
             return null;
         }
 
-        return new ApplyMatch(armorStack, linerType);
+        return new ApplyMatch(armorStack, linerStack, linerType);
     }
 
     private static boolean isCompatibleLinerForSlot(ItemStack linerStack, EquipmentSlot armorSlot, LiningType liningType) {
@@ -222,14 +233,14 @@ public final class ArmorLiningUtil {
         int total = 0;
         for (ItemStack armorStack : player.getArmorSlots()) {
             ArmorLining lining = getLining(armorStack);
-            if (lining != null && lining.type() == type) {
+            if (lining != null && lining.type() == type && !isIntrinsicTemperatureArmor(armorStack)) {
                 total++;
             }
         }
         return total;
     }
 
-    public record ApplyMatch(ItemStack armorStack, LiningType linerType) {}
+    public record ApplyMatch(ItemStack armorStack, ItemStack linerStack, LiningType linerType) {}
 
     public record RemovalMatch(int armorIndex, ItemStack armorStack, ArmorLining lining) {}
 }

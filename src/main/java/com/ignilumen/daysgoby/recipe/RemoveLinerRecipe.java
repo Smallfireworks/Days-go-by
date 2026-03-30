@@ -45,7 +45,7 @@ public final class RemoveLinerRecipe extends CustomRecipe {
             if (ArmorLiningUtil.isSnips(stack)) {
                 remaining.set(index, stack.copyWithCount(1));
             } else if (index == match.armorIndex()) {
-                remaining.set(index, ArmorLiningUtil.createLinerStack(match.armorStack(), match.lining().type()));
+                remaining.set(index, ArmorLiningUtil.restoreLinerStack(match.armorStack(), match.lining()));
             }
         }
 

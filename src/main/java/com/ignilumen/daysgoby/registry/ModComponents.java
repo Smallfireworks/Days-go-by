@@ -16,6 +16,7 @@ public final class ModComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ArmorLining>> ARMOR_LINING =
             DATA_COMPONENTS.registerComponentType("armor_lining", builder -> builder
                     .persistent(ArmorLining.CODEC)
+                    .networkSynchronized(ArmorLining.STREAM_CODEC)
                     .cacheEncoding());
 
     private ModComponents() {}
