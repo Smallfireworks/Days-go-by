@@ -3,5 +3,13 @@
   "item.daysgoby.liner_snips": "Liner Snips",
   "tooltip.daysgoby.lined_armor": "Lining: %s",
   "tooltip.daysgoby.warming_liner": "Warming Liner",
-  "tooltip.daysgoby.cooling_liner": "Cooling Liner"
+  "tooltip.daysgoby.cooling_liner": "Cooling Liner",
+  "actionbar.daysgoby.wanderlust.new_land": "Your journey gains momentum",
+  "actionbar.daysgoby.wanderlust.new_biome_today": "You discover a biome new to today",
+  "actionbar.daysgoby.wanderlust.new_biome_lifetime": "You discover a biome new to you",
+  "actionbar.daysgoby.wanderlust.new_structure": "You discover a new landmark",
+  "message.daysgoby.wanderlust.daily_goal_complete": "Today's journey is complete",
+  "message.daysgoby.wanderlust.tier_1": "The road quickens your step",
+  "message.daysgoby.wanderlust.tier_2": "Your stride grows lighter",
+  "message.daysgoby.wanderlust.tier_3": "Fortune follows your wandering"
 }

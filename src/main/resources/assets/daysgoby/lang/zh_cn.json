@@ -3,5 +3,13 @@
   "item.daysgoby.liner_snips": "内衬剪",
   "tooltip.daysgoby.lined_armor": "内衬：%s",
   "tooltip.daysgoby.warming_liner": "保暖内衬",
-  "tooltip.daysgoby.cooling_liner": "降温内衬"
+  "tooltip.daysgoby.cooling_liner": "降温内衬",
+  "actionbar.daysgoby.wanderlust.new_land": "你的旅程更进一步",
+  "actionbar.daysgoby.wanderlust.new_biome_today": "你发现了今日新的群系",
+  "actionbar.daysgoby.wanderlust.new_biome_lifetime": "你发现了从未见过的群系",
+  "actionbar.daysgoby.wanderlust.new_structure": "你发现了新的地标",
+  "message.daysgoby.wanderlust.daily_goal_complete": "今日远行已完成",
+  "message.daysgoby.wanderlust.tier_1": "旅途让你的脚步更轻快",
+  "message.daysgoby.wanderlust.tier_2": "你的步伐越发轻盈",
+  "message.daysgoby.wanderlust.tier_3": "漫游眷顾着你"
 }
