@@ -17,10 +17,19 @@ public final class ModCreativeTabs {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN_TAB =
             CREATIVE_MODE_TABS.register("main", () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.daysgoby"))
-                    .icon(() -> ModModules.isWanderlustEnabled()
-                            ? ModItems.TRAVEL_JOURNAL.get().getDefaultInstance()
-                            : ModItems.LINER_SNIPS.get().getDefaultInstance())
+                    .icon(() -> {
+                        if (ModModules.isSpecialWeaponEnabled()) {
+                            return ModItems.XIAN_SWORD.get().getDefaultInstance();
+                        }
+                        if (ModModules.isWanderlustEnabled()) {
+                            return ModItems.TRAVEL_JOURNAL.get().getDefaultInstance();
+                        }
+                        return ModItems.LINER_SNIPS.get().getDefaultInstance();
+                    })
                     .displayItems((parameters, output) -> {
+                        if (ModModules.isSpecialWeaponEnabled()) {
+                            output.accept(ModItems.XIAN_SWORD.get());
+                        }
                         if (ModModules.isArmorLiningEnabled()) {
                             output.accept(ModItems.LINER_SNIPS.get());
                         }

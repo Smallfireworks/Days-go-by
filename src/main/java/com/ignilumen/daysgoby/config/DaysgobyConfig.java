@@ -43,6 +43,7 @@ public final class DaysgobyConfig {
 
     public static final class Startup {
         public final ModConfigSpec.BooleanValue armorLining;
+        public final ModConfigSpec.BooleanValue specialWeapon;
         public final ModConfigSpec.BooleanValue wanderlust;
 
         private Startup(ModConfigSpec.Builder builder) {
@@ -58,6 +59,15 @@ public final class DaysgobyConfig {
                     .translation("daysgoby.configuration.armorLining")
                     .gameRestart()
                     .define("armorLining", true);
+
+            specialWeapon = builder
+                    .comment(
+                            "启用特殊武器模块。",
+                            "关闭后会禁用该模块的相关合成配方。"
+                    )
+                    .translation("daysgoby.configuration.specialWeapon")
+                    .gameRestart()
+                    .define("specialWeapon", true);
 
             wanderlust = builder
                     .comment(

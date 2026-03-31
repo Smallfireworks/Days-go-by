@@ -3,6 +3,10 @@
     {
       "type": "neoforge:mod_loaded",
       "modid": "toughasnails"
+    },
+    {
+      "type": "daysgoby:module_enabled",
+      "module": "armor_lining"
     }
   ],
   "type": "daysgoby:apply_liner",

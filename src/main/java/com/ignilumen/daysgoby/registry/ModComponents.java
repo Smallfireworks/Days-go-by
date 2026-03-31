@@ -2,6 +2,7 @@ package com.ignilumen.daysgoby.registry;
 
 import com.ignilumen.daysgoby.Daysgoby;
 import com.ignilumen.daysgoby.item.ArmorLining;
+import com.ignilumen.daysgoby.item.XianSwordState;
 
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
@@ -17,6 +18,12 @@ public final class ModComponents {
             DATA_COMPONENTS.registerComponentType("armor_lining", builder -> builder
                     .persistent(ArmorLining.CODEC)
                     .networkSynchronized(ArmorLining.STREAM_CODEC)
+                    .cacheEncoding());
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<XianSwordState>> XIAN_SWORD_STATE =
+            DATA_COMPONENTS.registerComponentType("xian_sword_state", builder -> builder
+                    .persistent(XianSwordState.CODEC)
+                    .networkSynchronized(XianSwordState.STREAM_CODEC)
                     .cacheEncoding());
 
     private ModComponents() {}
