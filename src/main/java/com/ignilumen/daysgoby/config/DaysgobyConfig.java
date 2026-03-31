@@ -46,22 +46,25 @@ public final class DaysgobyConfig {
         public final ModConfigSpec.BooleanValue wanderlust;
 
         private Startup(ModConfigSpec.Builder builder) {
-            builder.comment("Enable or disable gameplay modules. Changes require a game restart.")
+            builder.comment("启用或禁用 Days go by 的功能模块。修改后需要重启游戏。")
+                    .translation("daysgoby.configuration.modules")
                     .push("modules");
 
             armorLining = builder
                     .comment(
-                            "Enable the armor lining module.",
-                            "This module is automatically disabled when Tough As Nails is not installed."
+                            "启用盔甲内衬模块。",
+                            "若未安装意志坚定，该模块会自动失效。"
                     )
+                    .translation("daysgoby.configuration.armorLining")
                     .gameRestart()
                     .define("armorLining", true);
 
             wanderlust = builder
                     .comment(
-                            "Enable the upcoming wanderlust module.",
-                            "Reserved for the future exploration-focused module."
+                            "启用旅行模块。",
+                            "该模块会鼓励玩家行动并探索世界。"
                     )
+                    .translation("daysgoby.configuration.wanderlust")
                     .gameRestart()
                     .define("wanderlust", true);
 

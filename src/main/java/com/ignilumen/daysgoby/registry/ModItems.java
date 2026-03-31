@@ -1,6 +1,7 @@
 package com.ignilumen.daysgoby.registry;
 
 import com.ignilumen.daysgoby.Daysgoby;
+import com.ignilumen.daysgoby.item.TravelJournalItem;
 
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
@@ -12,6 +13,9 @@ public final class ModItems {
 
     public static final DeferredItem<Item> LINER_SNIPS =
             ITEMS.registerSimpleItem("liner_snips", new Item.Properties().stacksTo(1));
+
+    public static final DeferredItem<TravelJournalItem> TRAVEL_JOURNAL =
+            ITEMS.register("travel_journal", () -> new TravelJournalItem(new Item.Properties()));
 
     private ModItems() {}
 

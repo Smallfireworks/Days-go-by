@@ -6,7 +6,6 @@ import com.ignilumen.daysgoby.module.ModModules;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -18,11 +17,15 @@ public final class ModCreativeTabs {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN_TAB =
             CREATIVE_MODE_TABS.register("main", () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.daysgoby"))
-                    .withTabsBefore(CreativeModeTabs.COMBAT)
-                    .icon(() -> ModItems.LINER_SNIPS.get().getDefaultInstance())
+                    .icon(() -> ModModules.isWanderlustEnabled()
+                            ? ModItems.TRAVEL_JOURNAL.get().getDefaultInstance()
+                            : ModItems.LINER_SNIPS.get().getDefaultInstance())
                     .displayItems((parameters, output) -> {
                         if (ModModules.isArmorLiningEnabled()) {
                             output.accept(ModItems.LINER_SNIPS.get());
+                        }
+                        if (ModModules.isWanderlustEnabled()) {
+                            output.accept(ModItems.TRAVEL_JOURNAL.get());
                         }
                     })
                     .build());
