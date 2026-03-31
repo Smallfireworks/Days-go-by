@@ -4,6 +4,7 @@ import com.ignilumen.daysgoby.wanderlust.WanderlustProgress;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -63,7 +64,9 @@ public final class WanderlustJournalScreen extends Screen {
         y += 16;
         guiGraphics.drawString(this.font, Component.translatable("screen.daysgoby.travel_journal.lifetime_biomes", progress.lifetimeBiomes().size()), left, y, color, true);
 
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        for (Renderable renderable : this.renderables) {
+            renderable.render(guiGraphics, mouseX, mouseY, partialTick);
+        }
     }
 
     @Override
