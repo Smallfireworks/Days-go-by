@@ -8,10 +8,12 @@ import net.neoforged.fml.ModList;
 
 public final class ModModules {
     public static final String ARMOR_LINING = "armor_lining";
+    public static final String ENCHANTMENT = "enchantment";
     public static final String SPECIAL_WEAPON = "special_weapon";
     public static final String WANDERLUST = "wanderlust";
 
     private static boolean armorLiningConfigured = true;
+    private static boolean enchantmentConfigured = true;
     private static boolean specialWeaponConfigured = true;
     private static boolean wanderlustConfigured = true;
 
@@ -19,6 +21,7 @@ public final class ModModules {
 
     public static void refreshFromConfig() {
         armorLiningConfigured = DaysgobyConfig.STARTUP.armorLining.getAsBoolean();
+        enchantmentConfigured = DaysgobyConfig.STARTUP.enchantment.getAsBoolean();
         specialWeaponConfigured = DaysgobyConfig.STARTUP.specialWeapon.getAsBoolean();
         wanderlustConfigured = DaysgobyConfig.STARTUP.wanderlust.getAsBoolean();
 
@@ -37,6 +40,12 @@ public final class ModModules {
             Daysgoby.LOGGER.info("Module {} disabled by config", SPECIAL_WEAPON);
         }
 
+        if (enchantmentConfigured) {
+            Daysgoby.LOGGER.info("Module {} enabled", ENCHANTMENT);
+        } else {
+            Daysgoby.LOGGER.info("Module {} disabled by config", ENCHANTMENT);
+        }
+
         if (wanderlustConfigured) {
             Daysgoby.LOGGER.info("Module {} enabled in config (gameplay content not implemented yet)", WANDERLUST);
         } else {
@@ -52,6 +61,10 @@ public final class ModModules {
         return wanderlustConfigured;
     }
 
+    public static boolean isEnchantmentEnabled() {
+        return enchantmentConfigured;
+    }
+
     public static boolean isSpecialWeaponEnabled() {
         return specialWeaponConfigured;
     }
@@ -59,6 +72,7 @@ public final class ModModules {
     public static boolean isModuleEnabled(String moduleId) {
         return switch (moduleId) {
             case ARMOR_LINING -> isArmorLiningEnabled();
+            case ENCHANTMENT -> isEnchantmentEnabled();
             case SPECIAL_WEAPON -> isSpecialWeaponEnabled();
             case WANDERLUST -> isWanderlustEnabled();
             default -> false;

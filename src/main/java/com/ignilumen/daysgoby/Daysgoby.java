@@ -3,6 +3,10 @@ package com.ignilumen.daysgoby;
 import com.ignilumen.daysgoby.client.DaysgobyClientHooks;
 import com.ignilumen.daysgoby.condition.ModConditions;
 import com.ignilumen.daysgoby.config.DaysgobyConfig;
+import com.ignilumen.daysgoby.config.EnchantmentConfig;
+import com.ignilumen.daysgoby.enchantment.ConfiguredEnchantmentPack;
+import com.ignilumen.daysgoby.enchantment.EnchantmentRuntimeEvents;
+import com.ignilumen.daysgoby.enchantment.ShitRainEvents;
 import com.ignilumen.daysgoby.config.WanderlustConfig;
 import com.ignilumen.daysgoby.registry.ModAttachments;
 import com.ignilumen.daysgoby.registry.ModComponents;
@@ -23,6 +27,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 @Mod(Daysgoby.MODID)
 public final class Daysgoby {
@@ -31,7 +36,9 @@ public final class Daysgoby {
 
     public Daysgoby(IEventBus modEventBus, ModContainer modContainer) {
         DaysgobyConfig.register(modContainer, modEventBus);
+        EnchantmentConfig.register(modContainer);
         WanderlustConfig.register(modContainer);
+        modEventBus.addListener(ConfiguredEnchantmentPack::onAddPackFinders);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             DaysgobyClientHooks.registerConfigScreen(modContainer);
@@ -53,6 +60,17 @@ public final class Daysgoby {
         NeoForge.EVENT_BUS.addListener(SpecialWeaponEvents::onLivingDamagePost);
         NeoForge.EVENT_BUS.addListener(SpecialWeaponEvents::onLivingDeath);
         NeoForge.EVENT_BUS.addListener(SpecialWeaponEvents::onPlayerTick);
+        NeoForge.EVENT_BUS.addListener(EnchantmentRuntimeEvents::onGetEnchantmentLevel);
+        NeoForge.EVENT_BUS.addListener(ShitRainEvents::onFoodUseStart);
+        NeoForge.EVENT_BUS.addListener(ShitRainEvents::onFoodUseStop);
+        NeoForge.EVENT_BUS.addListener(ShitRainEvents::onFoodUseFinish);
+        NeoForge.EVENT_BUS.addListener(ShitRainEvents::onPlayerAttackEntity);
+        NeoForge.EVENT_BUS.addListener(ShitRainEvents::onArrowLoose);
+        NeoForge.EVENT_BUS.addListener(ShitRainEvents::onProjectileJoinLevel);
+        NeoForge.EVENT_BUS.addListener(ShitRainEvents::onLivingDamagePost);
+        NeoForge.EVENT_BUS.addListener(ShitRainEvents::onLivingDeath);
+        NeoForge.EVENT_BUS.addListener(ShitRainEvents::onEntityLeaveLevel);
+        NeoForge.EVENT_BUS.addListener(ShitRainEvents::onServerTickPost);
         NeoForge.EVENT_BUS.addListener(WanderlustEvents::onPlayerTick);
     }
 }

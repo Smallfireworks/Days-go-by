@@ -43,6 +43,7 @@ public final class DaysgobyConfig {
 
     public static final class Startup {
         public final ModConfigSpec.BooleanValue armorLining;
+        public final ModConfigSpec.BooleanValue enchantment;
         public final ModConfigSpec.BooleanValue specialWeapon;
         public final ModConfigSpec.BooleanValue wanderlust;
 
@@ -59,6 +60,15 @@ public final class DaysgobyConfig {
                     .translation("daysgoby.configuration.armorLining")
                     .gameRestart()
                     .define("armorLining", true);
+
+            enchantment = builder
+                    .comment(
+                            "启用附魔模块。",
+                            "关闭后会禁用本模组附魔的效果和获取来源。"
+                    )
+                    .translation("daysgoby.configuration.enchantment")
+                    .gameRestart()
+                    .define("enchantment", true);
 
             specialWeapon = builder
                     .comment(
