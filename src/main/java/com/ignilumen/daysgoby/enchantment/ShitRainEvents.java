@@ -3,21 +3,19 @@ package com.ignilumen.daysgoby.enchantment;
 import com.ignilumen.daysgoby.config.EnchantmentConfig;
 import com.ignilumen.daysgoby.module.ModModules;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -31,6 +29,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -51,6 +50,7 @@ import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -67,6 +67,7 @@ public final class ShitRainEvents {
     private static final int PLAYER_NAUSEA_TICKS = 160;
     private static final int MOB_NAUSEA_TICKS = 100;
     private static final int ATTACK_INTENT_WINDOW_TICKS = 40;
+    private static final int RETALIATION_UNLOCK_TICKS = 200;
     private static final int FEAR_DURATION_TICKS = 120;
     private static final float AVOID_DISTANCE = 10.0F;
     private static final int AVOID_PRIORITY = 1;
@@ -82,7 +83,7 @@ public final class ShitRainEvents {
     private static final Map<UUID, FearState> FEAR_STATES = new HashMap<>();
     private static final Map<UUID, Long> ATTACK_INTENT_UNTIL = new HashMap<>();
     private static final Map<UUID, ShitRainAvoidGoal> FEAR_GOALS = new HashMap<>();
-    private static final Set<MobPlayerPair> RETALIATION_UNLOCKS = new HashSet<>();
+    private static final Map<MobPlayerPair, Long> RETALIATION_UNLOCKS = new HashMap<>();
 
     private ShitRainEvents() {}
 
@@ -173,7 +174,7 @@ public final class ShitRainEvents {
         }
 
         if (event.getEntity() instanceof Player player) {
-            handlePlayerDamagedByMob(event, player);
+            handlePlayerDamagedByMob(event.getSource(), player);
             return;
         }
 
@@ -215,17 +216,17 @@ public final class ShitRainEvents {
         cleanupMissingEntities(event);
     }
 
-    private static void handlePlayerDamagedByMob(LivingDamageEvent.Post event, Player player) {
+    private static void handlePlayerDamagedByMob(DamageSource source, Player player) {
         if (getShitRainLevel(player) <= 0) {
             return;
         }
 
-        Mob attacker = resolveDirectMeleeMob(event.getSource());
+        Mob attacker = resolveDirectMeleeMob(source);
         if (attacker == null || !canAffectMob(attacker)) {
             return;
         }
 
-        if (RETALIATION_UNLOCKS.contains(new MobPlayerPair(attacker.getUUID(), player.getUUID())) || hasAttackIntent(player)) {
+        if (hasRetaliationUnlock(attacker, player) || hasAttackIntent(player)) {
             unlockRetaliation(attacker, player);
             return;
         }
@@ -241,11 +242,24 @@ public final class ShitRainEvents {
 
     @Nullable
     private static Mob resolveDirectMeleeMob(DamageSource source) {
-        if (!source.isDirect() || !(source.getDirectEntity() instanceof Mob mob) || source.getEntity() != mob) {
+        if (!source.is(DamageTypes.MOB_ATTACK) && !source.is(DamageTypes.MOB_ATTACK_NO_AGGRO)) {
             return null;
         }
 
-        return mob;
+        Entity directEntity = source.getDirectEntity();
+        if (directEntity instanceof Projectile) {
+            return null;
+        }
+
+        if (source.getEntity() instanceof Mob mob) {
+            return mob;
+        }
+
+        if (directEntity instanceof Mob mob) {
+            return mob;
+        }
+
+        return null;
     }
 
     private static void frightenMob(Mob mob, Player player) {
@@ -267,7 +281,12 @@ public final class ShitRainEvents {
     }
 
     private static void unlockRetaliation(Mob mob, Player player) {
-        RETALIATION_UNLOCKS.add(new MobPlayerPair(mob.getUUID(), player.getUUID()));
+        long currentTick = getServerTick(mob);
+        if (currentTick < 0L) {
+            return;
+        }
+
+        RETALIATION_UNLOCKS.put(new MobPlayerPair(mob.getUUID(), player.getUUID()), currentTick + RETALIATION_UNLOCK_TICKS);
         clearFearForPair(mob, player.getUUID());
     }
 
@@ -286,29 +305,6 @@ public final class ShitRainEvents {
         }
 
         ATTACK_INTENT_UNTIL.put(player.getUUID(), (long) server.getTickCount() + ATTACK_INTENT_WINDOW_TICKS);
-        unlockRetaliationForPlayer(player, server);
-    }
-
-    private static void unlockRetaliationForPlayer(Player player, MinecraftServer server) {
-        UUID playerId = player.getUUID();
-        Iterator<Map.Entry<UUID, FearState>> iterator = FEAR_STATES.entrySet().iterator();
-
-        while (iterator.hasNext()) {
-            Map.Entry<UUID, FearState> entry = iterator.next();
-            if (!entry.getValue().playerId().equals(playerId)) {
-                continue;
-            }
-
-            Mob mob = findMob(server, entry.getKey());
-            iterator.remove();
-            RETALIATION_UNLOCKS.add(new MobPlayerPair(entry.getKey(), playerId));
-
-            if (mob != null) {
-                removeAvoidGoal(mob);
-            } else {
-                FEAR_GOALS.remove(entry.getKey());
-            }
-        }
     }
 
     private static boolean hasAttackIntent(Player player) {
@@ -324,6 +320,27 @@ public final class ShitRainEvents {
 
         if (attackIntentUntil <= server.getTickCount()) {
             ATTACK_INTENT_UNTIL.remove(player.getUUID());
+            return false;
+        }
+
+        return true;
+    }
+
+    private static boolean hasRetaliationUnlock(Mob mob, Player player) {
+        MobPlayerPair pair = new MobPlayerPair(mob.getUUID(), player.getUUID());
+        long currentTick = getServerTick(mob);
+        if (currentTick < 0L) {
+            RETALIATION_UNLOCKS.remove(pair);
+            return false;
+        }
+
+        Long expiresAtTick = RETALIATION_UNLOCKS.get(pair);
+        if (expiresAtTick == null) {
+            return false;
+        }
+
+        if (expiresAtTick <= currentTick) {
+            RETALIATION_UNLOCKS.remove(pair);
             return false;
         }
 
@@ -360,9 +377,9 @@ public final class ShitRainEvents {
         FOOD_SNAPSHOTS.remove(playerId);
         ATTACK_INTENT_UNTIL.remove(playerId);
 
-        Iterator<MobPlayerPair> retaliationIterator = RETALIATION_UNLOCKS.iterator();
+        Iterator<Map.Entry<MobPlayerPair, Long>> retaliationIterator = RETALIATION_UNLOCKS.entrySet().iterator();
         while (retaliationIterator.hasNext()) {
-            if (retaliationIterator.next().playerId().equals(playerId)) {
+            if (retaliationIterator.next().getKey().playerId().equals(playerId)) {
                 retaliationIterator.remove();
             }
         }
@@ -392,7 +409,7 @@ public final class ShitRainEvents {
 
     private static void clearMobState(Mob mob) {
         FEAR_STATES.remove(mob.getUUID());
-        RETALIATION_UNLOCKS.removeIf(pair -> pair.mobId().equals(mob.getUUID()));
+        RETALIATION_UNLOCKS.entrySet().removeIf(entry -> entry.getKey().mobId().equals(mob.getUUID()));
         removeAvoidGoal(mob);
     }
 
@@ -427,7 +444,9 @@ public final class ShitRainEvents {
         }
 
         ATTACK_INTENT_UNTIL.entrySet().removeIf(entry -> entry.getValue() <= currentTick || event.getServer().getPlayerList().getPlayer(entry.getKey()) == null);
-        RETALIATION_UNLOCKS.removeIf(pair -> findMob(event.getServer(), pair.mobId()) == null || event.getServer().getPlayerList().getPlayer(pair.playerId()) == null);
+        RETALIATION_UNLOCKS.entrySet().removeIf(entry -> entry.getValue() <= currentTick
+                || findMob(event.getServer(), entry.getKey().mobId()) == null
+                || event.getServer().getPlayerList().getPlayer(entry.getKey().playerId()) == null);
     }
 
     @Nullable
@@ -448,20 +467,35 @@ public final class ShitRainEvents {
 
     private static void clearAggro(Mob mob, Player player) {
         mob.setTarget(null);
-        mob.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
-        mob.getBrain().eraseMemory(MemoryModuleType.AVOID_TARGET);
+        eraseBrainMemory(mob, MemoryModuleType.ATTACK_TARGET);
+        eraseBrainMemory(mob, MemoryModuleType.AVOID_TARGET);
+        eraseBrainMemory(mob, MemoryModuleType.ANGRY_AT);
 
-        Optional<UUID> angryAt = mob.getBrain().getMemory(MemoryModuleType.ANGRY_AT);
-        if (angryAt.isPresent() && angryAt.get().equals(player.getUUID())) {
-            mob.getBrain().eraseMemory(MemoryModuleType.ANGRY_AT);
-        }
-
-        if (mob instanceof NeutralMob neutralMob) {
+        if (mob instanceof NeutralMob neutralMob && player.getUUID().equals(neutralMob.getPersistentAngerTarget())) {
             neutralMob.stopBeingAngry();
         }
     }
 
+    private static void eraseBrainMemory(Mob mob, MemoryModuleType<?> memoryType) {
+        try {
+            mob.getBrain().eraseMemory(memoryType);
+        } catch (IllegalStateException ignored) {
+            // Not every mob registers every brain memory.
+        }
+    }
+
     private static void spawnBrownParticles(ServerLevel level, LivingEntity entity, int count, double horizontalSpread, double verticalSpread) {
+        level.sendParticles(
+                new BlockParticleOption(ParticleTypes.BLOCK, Blocks.MUD.defaultBlockState()),
+                entity.getX(),
+                entity.getY(0.65D),
+                entity.getZ(),
+                Math.max(6, count / 2),
+                horizontalSpread,
+                verticalSpread,
+                horizontalSpread,
+                0.01D
+        );
         level.sendParticles(
                 ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, BROWN_PARTICLE_COLOR),
                 entity.getX(),
@@ -521,7 +555,7 @@ public final class ShitRainEvents {
             }
 
             ServerPlayer player = serverLevel.getServer().getPlayerList().getPlayer(fearState.playerId());
-            if (player == null || !player.isAlive() || RETALIATION_UNLOCKS.contains(new MobPlayerPair(this.mob.getUUID(), player.getUUID()))) {
+            if (player == null || !player.isAlive() || hasRetaliationUnlock(this.mob, player)) {
                 return false;
             }
 
@@ -546,7 +580,7 @@ public final class ShitRainEvents {
                     && this.fearedPlayer.isAlive()
                     && fearState != null
                     && fearState.expiresAtTick() > getServerTick(this.mob)
-                    && !RETALIATION_UNLOCKS.contains(new MobPlayerPair(this.mob.getUUID(), this.fearedPlayer.getUUID()))
+                    && !hasRetaliationUnlock(this.mob, this.fearedPlayer)
                     && !this.mob.getNavigation().isDone();
         }
 
