@@ -7,6 +7,7 @@ import com.ignilumen.daysgoby.config.EnchantmentConfig;
 import com.ignilumen.daysgoby.enchantment.ConfiguredEnchantmentPack;
 import com.ignilumen.daysgoby.enchantment.EnchantmentRuntimeEvents;
 import com.ignilumen.daysgoby.enchantment.ShitRainEvents;
+import com.ignilumen.daysgoby.network.ModPayloads;
 import com.ignilumen.daysgoby.config.WanderlustConfig;
 import com.ignilumen.daysgoby.registry.ModAttachments;
 import com.ignilumen.daysgoby.registry.ModComponents;
@@ -39,6 +40,7 @@ public final class Daysgoby {
         EnchantmentConfig.register(modContainer);
         WanderlustConfig.register(modContainer);
         modEventBus.addListener(ConfiguredEnchantmentPack::onAddPackFinders);
+        modEventBus.addListener(ModPayloads::onRegisterPayloadHandlers);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             DaysgobyClientHooks.registerConfigScreen(modContainer);

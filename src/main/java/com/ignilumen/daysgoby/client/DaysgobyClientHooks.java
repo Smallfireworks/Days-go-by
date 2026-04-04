@@ -1,6 +1,5 @@
 package com.ignilumen.daysgoby.client;
 
-import com.ignilumen.daysgoby.wanderlust.WanderlustProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -24,7 +23,7 @@ public final class DaysgobyClientHooks {
         NeoForge.EVENT_BUS.addListener(SpecialWeaponClientRenderer::onRenderLevelStage);
     }
 
-    public static void openTravelJournal(Player player, WanderlustProgress progress) {
-        Minecraft.getInstance().setScreen(new WanderlustJournalScreen(Component.translatable("screen.daysgoby.travel_journal"), player, progress));
+    public static void openTravelJournal(Player player) {
+        Minecraft.getInstance().setScreen(new WanderlustJournalScreen(Component.translatable("screen.daysgoby.travel_journal"), player));
     }
 }

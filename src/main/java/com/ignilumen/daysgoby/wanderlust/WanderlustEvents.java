@@ -107,6 +107,9 @@ public final class WanderlustEvents {
                         feedback.progressMessage = Component.translatable("actionbar.daysgoby.wanderlust.new_structure");
                     }
                 }
+                if (!progress.lifetimeStructures().contains(structureKey)) {
+                    progress = progress.addLifetimeStructure(structureKey);
+                }
             }
         }
 
@@ -114,6 +117,10 @@ public final class WanderlustEvents {
                 && progress.journeyScore() >= WanderlustConfig.SERVER.dailyGoalScore.getAsInt();
         if (dailyGoalJustCompleted) {
             progress = progress.markDailyGoalCompleted();
+            int grantedTickets = WanderlustConfig.ticketPerDailyGoal();
+            if (grantedTickets > 0) {
+                progress = progress.addJourneyTickets(grantedTickets);
+            }
         }
 
         if (!progress.equals(original)) {
@@ -134,6 +141,10 @@ public final class WanderlustEvents {
         int tierAfter = getTier(scoreAfter);
         if (dailyGoalJustCompleted) {
             serverPlayer.displayClientMessage(Component.translatable("message.daysgoby.wanderlust.daily_goal_complete"), false);
+            int grantedTickets = WanderlustConfig.ticketPerDailyGoal();
+            if (grantedTickets > 0) {
+                serverPlayer.displayClientMessage(Component.translatable("message.daysgoby.wanderlust.tickets_gained", grantedTickets), false);
+            }
         } else if (tierAfter > tierBefore) {
             serverPlayer.displayClientMessage(Component.translatable("message.daysgoby.wanderlust.tier_" + tierAfter), false);
         }

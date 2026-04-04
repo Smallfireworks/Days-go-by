@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "daysgoby:module_enabled",
+      "module": "wanderlust"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PSP",
+    "PCP",
+    " L "
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "S": {
+      "item": "minecraft:book"
+    },
+    "C": {
+      "item": "minecraft:compass"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    }
+  },
+  "result": {
+    "id": "daysgoby:travel_journal",
+    "count": 1
+  }
+}

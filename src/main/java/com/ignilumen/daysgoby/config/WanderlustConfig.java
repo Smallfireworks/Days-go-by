@@ -36,6 +36,22 @@ public final class WanderlustConfig {
         return Math.max(tier2Score(), SERVER.tier3Score.getAsInt());
     }
 
+    public static boolean isJournalLotteryEnabled() {
+        return SERVER.enableJournalLottery.getAsBoolean();
+    }
+
+    public static int ticketPerDailyGoal() {
+        return SERVER.ticketPerDailyGoal.getAsInt();
+    }
+
+    public static int lotteryCostPerDraw() {
+        return SERVER.lotteryCostPerDraw.getAsInt();
+    }
+
+    public static boolean dropRewardsIfInventoryFull() {
+        return SERVER.dropRewardsIfInventoryFull.getAsBoolean();
+    }
+
     public static final class Server {
         public final ModConfigSpec.IntValue chunksPerPoint;
         public final ModConfigSpec.IntValue dailyBiomeScore;
@@ -47,6 +63,10 @@ public final class WanderlustConfig {
         public final ModConfigSpec.IntValue tier2Score;
         public final ModConfigSpec.IntValue tier3Score;
         public final ModConfigSpec.IntValue effectDurationSeconds;
+        public final ModConfigSpec.BooleanValue enableJournalLottery;
+        public final ModConfigSpec.IntValue ticketPerDailyGoal;
+        public final ModConfigSpec.IntValue lotteryCostPerDraw;
+        public final ModConfigSpec.BooleanValue dropRewardsIfInventoryFull;
 
         private Server(ModConfigSpec.Builder builder) {
             builder.comment("旅行模块的计分规则。")
@@ -114,6 +134,32 @@ public final class WanderlustConfig {
                     .comment("每次获得旅程分后，旅行增益会被刷新到多少秒。")
                     .translation("daysgoby.configuration.effectDurationSeconds")
                     .defineInRange("effectDurationSeconds", 240, 10, 3600);
+
+            builder.pop();
+
+            builder.comment("旅行日志抽取系统设置。")
+                    .translation("daysgoby.configuration.lottery")
+                    .push("lottery");
+
+            enableJournalLottery = builder
+                    .comment("是否启用旅行日志中的旅券抽取。")
+                    .translation("daysgoby.configuration.enableJournalLottery")
+                    .define("enableJournalLottery", true);
+
+            ticketPerDailyGoal = builder
+                    .comment("每天首次完成远行目标时获得多少张旅券。")
+                    .translation("daysgoby.configuration.ticketPerDailyGoal")
+                    .defineInRange("ticketPerDailyGoal", 1, 0, 64);
+
+            lotteryCostPerDraw = builder
+                    .comment("每次旅券抽取消耗多少张旅券。")
+                    .translation("daysgoby.configuration.lotteryCostPerDraw")
+                    .defineInRange("lotteryCostPerDraw", 1, 1, 64);
+
+            dropRewardsIfInventoryFull = builder
+                    .comment("背包装不下抽取奖励时，是否将剩余奖励掉落在玩家脚边。")
+                    .translation("daysgoby.configuration.dropRewardsIfInventoryFull")
+                    .define("dropRewardsIfInventoryFull", true);
 
             builder.pop();
         }
