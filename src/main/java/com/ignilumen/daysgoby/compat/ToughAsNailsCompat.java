@@ -12,15 +12,19 @@ import net.minecraft.world.entity.player.Player;
 public final class ToughAsNailsCompat {
     public static final String MOD_ID = "toughasnails";
 
-    private static boolean initialized;
+    private static boolean temperatureInitialized;
 
     private ToughAsNailsCompat() {}
 
     public static void init() {
-        if (initialized) {
+        initTemperatureCompat();
+    }
+
+    private static void initTemperatureCompat() {
+        if (temperatureInitialized) {
             return;
         }
-        initialized = true;
+        temperatureInitialized = true;
 
         try {
             Class<?> modifierInterface = Class.forName("toughasnails.api.temperature.IPlayerTemperatureModifier");

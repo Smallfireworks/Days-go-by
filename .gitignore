@@ -17,6 +17,16 @@ bin/
 
 # VS Code
 .vscode/
+.vscode-test/
+
+# Other local editors / tools
+.claude/
+.cursor/
+.fleet/
+.zed/
+.vs/
+CLAUDE.md
+AGENTS.md
 
 # =============== #
 # OS Generated    #
@@ -49,6 +59,7 @@ user_cache.json
 # Local dependency/reference checkouts
 _deps/
 mods_hoardercraft/
+libraries/
 
 # ======================== #
 # Java & Minecraft         #

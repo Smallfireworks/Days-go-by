@@ -42,6 +42,7 @@ public final class DaysgobyConfig {
     }
 
     public static final class Startup {
+        public final ModConfigSpec.BooleanValue toughAsNailsCompat;
         public final ModConfigSpec.BooleanValue armorLining;
         public final ModConfigSpec.BooleanValue enchantment;
         public final ModConfigSpec.BooleanValue specialWeapon;
@@ -52,14 +53,32 @@ public final class DaysgobyConfig {
                     .translation("daysgoby.configuration.modules")
                     .push("modules");
 
+            builder.comment(
+                            "意志坚定联动相关设置。",
+                            "若未安装意志坚定，该分组会自动失效。"
+                    )
+                    .translation("daysgoby.configuration.toughAsNailsCompat")
+                    .push("toughAsNailsCompat");
+
+            toughAsNailsCompat = builder
+                    .comment(
+                            "启用意志坚定联动模块。",
+                            "关闭后会一并禁用该分组下的联动功能。"
+                    )
+                    .translation("daysgoby.configuration.toughAsNailsCompat.enabled")
+                    .gameRestart()
+                    .define("enabled", true);
+
             armorLining = builder
                     .comment(
                             "启用盔甲内衬模块。",
-                            "若未安装意志坚定，该模块会自动失效。"
+                            "关闭后会禁用内衬相关配方与温度联动。"
                     )
                     .translation("daysgoby.configuration.armorLining")
                     .gameRestart()
                     .define("armorLining", true);
+
+            builder.pop();
 
             enchantment = builder
                     .comment(

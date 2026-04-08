@@ -9,6 +9,8 @@ import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import net.minecraft.SharedConstants;
@@ -72,11 +74,27 @@ public final class ConfiguredEnchantmentPack {
     private static void writePack(Path packRoot) throws IOException {
         writeJson(packRoot.resolve("pack.mcmeta"), createPackMetadata());
         writeJson(packRoot.resolve(Path.of("data", Daysgoby.MODID, "enchantment", "shit_rain.json")), createShitRainEnchantment());
-        writeJson(packRoot.resolve(tagPath("in_enchanting_table")), createTagFile(EnchantmentAvailability.canAppearInEnchantingTable(ModEnchantments.SHIT_RAIN), ModEnchantments.SHIT_RAIN.location().toString()));
-        writeJson(packRoot.resolve(tagPath("on_random_loot")), createTagFile(EnchantmentAvailability.canGenerateOnRandomLoot(ModEnchantments.SHIT_RAIN), ModEnchantments.SHIT_RAIN.location().toString()));
-        writeJson(packRoot.resolve(tagPath("tradeable")), createTagFile(EnchantmentAvailability.canBeTradeable(ModEnchantments.SHIT_RAIN), ModEnchantments.SHIT_RAIN.location().toString()));
-        writeJson(packRoot.resolve(tagPath("on_traded_equipment")), createTagFile(EnchantmentAvailability.canGenerateOnTradedEquipment(ModEnchantments.SHIT_RAIN), ModEnchantments.SHIT_RAIN.location().toString()));
-        writeJson(packRoot.resolve(tagPath("on_mob_spawn_equipment")), createTagFile(EnchantmentAvailability.canGenerateOnMobSpawnEquipment(ModEnchantments.SHIT_RAIN), ModEnchantments.SHIT_RAIN.location().toString()));
+        writeJson(packRoot.resolve(Path.of("data", Daysgoby.MODID, "enchantment", "time_stop.json")), createTimeStopEnchantment());
+        writeJson(packRoot.resolve(tagPath("in_enchanting_table")), createTagFile(entriesFor(
+                EnchantmentAvailability.canAppearInEnchantingTable(ModEnchantments.SHIT_RAIN), ModEnchantments.SHIT_RAIN.location().toString(),
+                EnchantmentAvailability.canAppearInEnchantingTable(ModEnchantments.TIME_STOP), ModEnchantments.TIME_STOP.location().toString()
+        )));
+        writeJson(packRoot.resolve(tagPath("on_random_loot")), createTagFile(entriesFor(
+                EnchantmentAvailability.canGenerateOnRandomLoot(ModEnchantments.SHIT_RAIN), ModEnchantments.SHIT_RAIN.location().toString(),
+                EnchantmentAvailability.canGenerateOnRandomLoot(ModEnchantments.TIME_STOP), ModEnchantments.TIME_STOP.location().toString()
+        )));
+        writeJson(packRoot.resolve(tagPath("tradeable")), createTagFile(entriesFor(
+                EnchantmentAvailability.canBeTradeable(ModEnchantments.SHIT_RAIN), ModEnchantments.SHIT_RAIN.location().toString(),
+                EnchantmentAvailability.canBeTradeable(ModEnchantments.TIME_STOP), ModEnchantments.TIME_STOP.location().toString()
+        )));
+        writeJson(packRoot.resolve(tagPath("on_traded_equipment")), createTagFile(entriesFor(
+                EnchantmentAvailability.canGenerateOnTradedEquipment(ModEnchantments.SHIT_RAIN), ModEnchantments.SHIT_RAIN.location().toString(),
+                EnchantmentAvailability.canGenerateOnTradedEquipment(ModEnchantments.TIME_STOP), ModEnchantments.TIME_STOP.location().toString()
+        )));
+        writeJson(packRoot.resolve(tagPath("on_mob_spawn_equipment")), createTagFile(entriesFor(
+                EnchantmentAvailability.canGenerateOnMobSpawnEquipment(ModEnchantments.SHIT_RAIN), ModEnchantments.SHIT_RAIN.location().toString(),
+                EnchantmentAvailability.canGenerateOnMobSpawnEquipment(ModEnchantments.TIME_STOP), ModEnchantments.TIME_STOP.location().toString()
+        )));
     }
 
     private static JsonObject createPackMetadata() {
@@ -88,15 +106,25 @@ public final class ConfiguredEnchantmentPack {
         return root;
     }
 
-    private static JsonObject createTagFile(boolean includeEntry, String entry) {
+    private static JsonObject createTagFile(List<String> entries) {
         JsonObject root = new JsonObject();
         JsonArray values = new JsonArray();
         root.addProperty("replace", false);
-        if (includeEntry) {
+        for (String entry : entries) {
             values.add(entry);
         }
         root.add("values", values);
         return root;
+    }
+
+    private static List<String> entriesFor(Object... values) {
+        List<String> entries = new ArrayList<>();
+        for (int index = 0; index < values.length; index += 2) {
+            if ((boolean) values[index]) {
+                entries.add((String) values[index + 1]);
+            }
+        }
+        return entries;
     }
 
     private static JsonObject createShitRainEnchantment() {
@@ -121,6 +149,31 @@ public final class ConfiguredEnchantmentPack {
         root.add("slots", slots);
         root.addProperty("supported_items", "#minecraft:enchantable/leg_armor");
         root.addProperty("weight", 2);
+        return root;
+    }
+
+    private static JsonObject createTimeStopEnchantment() {
+        JsonObject root = new JsonObject();
+        JsonObject description = new JsonObject();
+        JsonObject minCost = new JsonObject();
+        JsonObject maxCost = new JsonObject();
+        JsonArray slots = new JsonArray();
+
+        description.addProperty("translate", "enchantment.daysgoby.time_stop");
+        minCost.addProperty("base", 14);
+        minCost.addProperty("per_level_above_first", 18);
+        maxCost.addProperty("base", 30);
+        maxCost.addProperty("per_level_above_first", 18);
+        slots.add("chest");
+
+        root.addProperty("anvil_cost", 6);
+        root.add("description", description);
+        root.add("min_cost", minCost);
+        root.add("max_cost", maxCost);
+        root.addProperty("max_level", 3);
+        root.add("slots", slots);
+        root.addProperty("supported_items", "#minecraft:enchantable/chest_armor");
+        root.addProperty("weight", 1);
         return root;
     }
 

@@ -11,6 +11,7 @@ public final class EnchantmentRuntimeEvents {
 
     public static void onGetEnchantmentLevel(GetEnchantmentLevelEvent event) {
         disableIfNeeded(event, ModEnchantments.SHIT_RAIN);
+        disableIfNeeded(event, ModEnchantments.TIME_STOP);
     }
 
     private static void disableIfNeeded(GetEnchantmentLevelEvent event, net.minecraft.resources.ResourceKey<Enchantment> enchantmentKey) {

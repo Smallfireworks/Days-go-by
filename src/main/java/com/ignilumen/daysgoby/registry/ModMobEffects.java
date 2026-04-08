@@ -3,6 +3,7 @@ package com.ignilumen.daysgoby.registry;
 import com.ignilumen.daysgoby.Daysgoby;
 import com.ignilumen.daysgoby.effect.BrokenSwordEffect;
 import com.ignilumen.daysgoby.effect.DemonBleedEffect;
+import com.ignilumen.daysgoby.effect.TimeStopEffect;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffect;
@@ -19,6 +20,9 @@ public final class ModMobEffects {
 
     public static final DeferredHolder<MobEffect, DemonBleedEffect> DEMON_BLEED =
             MOB_EFFECTS.register("demon_bleed", DemonBleedEffect::new);
+
+    public static final DeferredHolder<MobEffect, TimeStopEffect> TIME_STOP =
+            MOB_EFFECTS.register("time_stop", TimeStopEffect::new);
 
     private ModMobEffects() {}
 

@@ -9,6 +9,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 
 public final class ModEnchantments {
     public static final ResourceKey<Enchantment> SHIT_RAIN = key("shit_rain");
+    public static final ResourceKey<Enchantment> TIME_STOP = key("time_stop");
 
     private ModEnchantments() {}
 

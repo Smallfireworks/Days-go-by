@@ -28,29 +28,31 @@ public final class EnchantmentConfig {
     }
 
     public static final class Startup {
-        public final EnchantmentOptions shitRain;
+        public final MobAffectingEnchantmentOptions shitRain;
+        public final TimeStopEnchantmentOptions timeStop;
 
         private Startup(ModConfigSpec.Builder builder) {
             builder.comment("控制各个附魔的启用状态和获取来源。修改后需要重启游戏。")
-                    .translation("daysgoby.configuration.enchantments")
-                    .push("enchantments");
+                    .translation("daysgoby.configuration.enchantments");
 
-            shitRain = new EnchantmentOptions(builder, "shitRain", "daysgoby.configuration.shitRain");
-
-            builder.pop();
+            shitRain = new MobAffectingEnchantmentOptions(builder, "shitRain", "daysgoby.configuration.shitRain");
+            timeStop = new TimeStopEnchantmentOptions(builder, "timeStop", "daysgoby.configuration.timeStop");
         }
     }
 
-    public static final class EnchantmentOptions {
+    public static class BasicEnchantmentOptions {
         public final ModConfigSpec.BooleanValue enabled;
         public final ModConfigSpec.BooleanValue inEnchantingTable;
         public final ModConfigSpec.BooleanValue onRandomLoot;
         public final ModConfigSpec.BooleanValue tradeable;
         public final ModConfigSpec.BooleanValue onTradedEquipment;
         public final ModConfigSpec.BooleanValue onMobSpawnEquipment;
-        public final ModConfigSpec.ConfigValue<List<? extends String>> affectedMobWhitelist;
 
-        private EnchantmentOptions(ModConfigSpec.Builder builder, String key, String translationKey) {
+        private BasicEnchantmentOptions(ModConfigSpec.Builder builder, String key, String translationKey) {
+            this(builder, key, translationKey, true);
+        }
+
+        protected BasicEnchantmentOptions(ModConfigSpec.Builder builder, String key, String translationKey, boolean closeSection) {
             builder.comment("该附魔的细化配置。")
                     .translation(translationKey)
                     .push(key);
@@ -91,6 +93,18 @@ public final class EnchantmentConfig {
                     .gameRestart()
                     .define("onMobSpawnEquipment", false);
 
+            if (closeSection) {
+                builder.pop();
+            }
+        }
+    }
+
+    public static final class MobAffectingEnchantmentOptions extends BasicEnchantmentOptions {
+        public final ModConfigSpec.ConfigValue<List<? extends String>> affectedMobWhitelist;
+
+        private MobAffectingEnchantmentOptions(ModConfigSpec.Builder builder, String key, String translationKey) {
+            super(builder, key, translationKey, false);
+
             affectedMobWhitelist = builder
                     .comment(
                             "受该附魔恶心/躲避效果影响的生物白名单。",
@@ -99,13 +113,36 @@ public final class EnchantmentConfig {
                     )
                     .translation(translationKey + ".affectedMobWhitelist")
                     .gameRestart()
-                    .defineListAllowEmpty("affectedMobWhitelist", List.of(), () -> "minecraft:zombie", EnchantmentOptions::isValidEntityId);
+                    .defineListAllowEmpty("affectedMobWhitelist", List.of(), () -> "minecraft:zombie", MobAffectingEnchantmentOptions::isValidEntityId);
 
             builder.pop();
         }
 
         private static boolean isValidEntityId(Object value) {
             return value instanceof String string && ResourceLocation.tryParse(string) != null;
+        }
+    }
+
+    public static final class TimeStopEnchantmentOptions extends BasicEnchantmentOptions {
+        public final ModConfigSpec.DoubleValue fieldRadius;
+        public final ModConfigSpec.IntValue cooldownSeconds;
+
+        private TimeStopEnchantmentOptions(ModConfigSpec.Builder builder, String key, String translationKey) {
+            super(builder, key, translationKey, false);
+
+            fieldRadius = builder
+                    .comment("时间停止 III 触发范围时停时的领域半径。")
+                    .translation(translationKey + ".fieldRadius")
+                    .gameRestart()
+                    .defineInRange("fieldRadius", 6.0D, 1.0D, 32.0D);
+
+            cooldownSeconds = builder
+                    .comment("同一穿戴者再次触发时间停止前需要等待的秒数。")
+                    .translation(translationKey + ".cooldownSeconds")
+                    .gameRestart()
+                    .defineInRange("cooldownSeconds", 10, 0, 300);
+
+            builder.pop();
         }
     }
 }

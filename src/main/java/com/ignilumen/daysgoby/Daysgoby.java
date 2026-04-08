@@ -7,6 +7,7 @@ import com.ignilumen.daysgoby.config.EnchantmentConfig;
 import com.ignilumen.daysgoby.enchantment.ConfiguredEnchantmentPack;
 import com.ignilumen.daysgoby.enchantment.EnchantmentRuntimeEvents;
 import com.ignilumen.daysgoby.enchantment.ShitRainEvents;
+import com.ignilumen.daysgoby.enchantment.TimeStopEvents;
 import com.ignilumen.daysgoby.network.ModPayloads;
 import com.ignilumen.daysgoby.config.WanderlustConfig;
 import com.ignilumen.daysgoby.registry.ModAttachments;
@@ -73,6 +74,28 @@ public final class Daysgoby {
         NeoForge.EVENT_BUS.addListener(ShitRainEvents::onLivingDeath);
         NeoForge.EVENT_BUS.addListener(ShitRainEvents::onEntityLeaveLevel);
         NeoForge.EVENT_BUS.addListener(ShitRainEvents::onServerTickPost);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onEntityJoinLevel);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onEntityLeaveLevel);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onLivingDeath);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onLivingDamagePost);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onIncomingDamage);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onAttackEntity);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onArrowLoose);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onRightClickBlock);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onRightClickItem);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onEntityInteract);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onEntityInteractSpecific);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onLeftClickBlock);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onUseItemStart);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onUseItemTick);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onUseItemStop);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onSwapItems);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onDestroyBlock);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onChangeTarget);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onKnockBack);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onEntityTickPre);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onEntityTickPost);
+        NeoForge.EVENT_BUS.addListener(TimeStopEvents::onServerTickPost);
         NeoForge.EVENT_BUS.addListener(WanderlustEvents::onPlayerTick);
     }
 }
